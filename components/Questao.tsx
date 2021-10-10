@@ -6,6 +6,25 @@ import styles from '../styles/Questao.module.css';
 import Enunciado from './Enunciado';
 import Resposta from './Resposta';
 
+const letras = [
+  {
+    letra: 'A',
+    cor: '#f2c866',
+  },
+  {
+    letra: 'B',
+    cor: '#f266ba',
+  },
+  {
+    letra: 'C',
+    cor: '#85d4f2',
+  },
+  {
+    letra: 'D',
+    cor: '#BCE956',
+  },
+];
+
 interface QuestaoProps {
   valor: QuestaoModel;
 }
@@ -20,8 +39,8 @@ const Questao = (props: QuestaoProps) => {
           key={i}
           valor={resposta}
           indice={i}
-          letra="A"
-          corFundoDaLetra="#f2c866"
+          letra={letras[i].letra}
+          corFundoDaLetra={letras[i].cor}
         />
       );
     });
