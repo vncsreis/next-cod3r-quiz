@@ -10,7 +10,18 @@ const Home: NextPage = () => {
     RespostaModel.errada('Azul'),
     RespostaModel.certa('Preta'),
   ]);
-  return <Questao valor={questaoTeste} />;
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+      }}
+    >
+      <Questao valor={questaoTeste} />
+    </div>
+  );
 };
 
 export default Home;
