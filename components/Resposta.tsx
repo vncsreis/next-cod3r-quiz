@@ -21,8 +21,8 @@ const Resposta = (props: RespostaProps) => {
           >
             {props.letra}
           </div>
+          <div className={styles.valor}>{resposta.valor}</div>
         </div>
-        <div className={styles.valor}>{resposta.valor}</div>
         <div className={styles.verso}></div>
       </div>
     </div>
