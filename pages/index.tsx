@@ -19,6 +19,12 @@ const Home: NextPage = () => {
     setQuestao(questao.responderCom(indice));
   };
 
+  const tempoEsgotado = () => {
+    if (!questao.respondida) {
+      setQuestao(questao.responderCom(-1));
+    }
+  };
+
   return (
     <div
       style={{
@@ -28,7 +34,11 @@ const Home: NextPage = () => {
         height: '100vh',
       }}
     >
-      <Questao valor={questao} respostaFornecida={respostaFornecida} />
+      <Questao
+        valor={questao}
+        respostaFornecida={respostaFornecida}
+        tempoEsgotado={() => tempoEsgotado()}
+      />
     </div>
   );
 };
