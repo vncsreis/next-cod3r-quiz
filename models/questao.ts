@@ -43,6 +43,10 @@ export default class QuestaoModel {
     return false;
   }
 
+  get naoRespondida() {
+    return !this.respondida;
+  }
+
   responderCom(indice: number) {
     const acertou = this.#respostas[indice]?.certa;
     const respostas = this.#respostas.map((resposta, i) => {

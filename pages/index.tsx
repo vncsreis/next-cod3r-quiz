@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import Botao from '../components/Botao';
 import Questao from '../components/Questao';
 import QuestaoModel from '../models/questao';
 import RespostaModel from '../models/resposta';
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
   };
 
   const tempoEsgotado = () => {
-    if (!questao.respondida) {
+    if (questao.naoRespondida) {
       setQuestao(questao.responderCom(-1));
     }
   };
@@ -29,6 +30,7 @@ const Home: NextPage = () => {
     <div
       style={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
@@ -38,7 +40,9 @@ const Home: NextPage = () => {
         valor={questao}
         respostaFornecida={respostaFornecida}
         tempoEsgotado={() => tempoEsgotado()}
+        tempoPraResposta={5}
       />
+      <Botao texto="Próxima" href="/resultado" />
     </div>
   );
 };
