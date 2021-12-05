@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
-import Botao from '../components/Botao';
-import Questao from '../components/Questao';
+import { useState, useEffect } from 'react';
+import Questionario from '../components/Questionario';
 import QuestaoModel from '../models/questao';
 import RespostaModel from '../models/resposta';
 
@@ -12,38 +11,44 @@ const questaoMock = new QuestaoModel(1, 'Melhor cor?', [
   RespostaModel.certa('Preta'),
 ]);
 
+const BASE_URL = 'http://localhost:3000/api';
+
 const Home: NextPage = () => {
+  const [idsDasQuestoes, setIdsDasQuestoes] = useState<number[]>([]);
   const [questao, setQuestao] = useState(questaoMock);
 
-  const respostaFornecida = (indice: number) => {
-    console.log(indice);
-    setQuestao(questao.responderCom(indice));
+  const carregarIdsDasQuestoes = async () => {
+    const resp = await fetch(`${BASE_URL}/questionario`);
+    const ids = await resp.json();
+    setIdsDasQuestoes(ids);
   };
 
-  const tempoEsgotado = () => {
-    if (questao.naoRespondida) {
-      setQuestao(questao.responderCom(-1));
-    }
+  const carregarQuestao = async (idQuestao: number) => {
+    const resp = await fetch(`${BASE_URL}/questoes/${idQuestao}`);
+    const questaoDados = await resp.json();
+    const novaQuestao = QuestaoModel.criarUsandoObjeto(questaoDados);
+    setQuestao(novaQuestao);
   };
+
+  useEffect(() => {
+    carregarIdsDasQuestoes();
+  }, []);
+
+  useEffect(() => {
+    idsDasQuestoes.length > 0 && carregarQuestao(idsDasQuestoes[0]);
+  }, [idsDasQuestoes]);
+
+  const questaoRespondida = (questao: QuestaoModel) => {};
+
+  const irPraProximoPasso = () => {};
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <Questao
-        valor={questao}
-        respostaFornecida={respostaFornecida}
-        tempoEsgotado={() => tempoEsgotado()}
-        tempoPraResposta={5}
-      />
-      <Botao texto="Próxima" href="/resultado" />
-    </div>
+    <Questionario
+      questao={questao}
+      ultima={false}
+      questaoRespondida={questaoRespondida}
+      irPraProximoPasso={irPraProximoPasso}
+    />
   );
 };
 

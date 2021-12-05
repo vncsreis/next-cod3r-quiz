@@ -4,7 +4,9 @@
   height: 100px;
   width: 80%;
   margin: 10px;
+  margin: 10px auto;
   align-self: stretch;
+  cursor: pointer;
 }
 
 .conteudoResposta {
