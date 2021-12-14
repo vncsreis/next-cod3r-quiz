@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Questionario from '../components/Questionario';
 import QuestaoModel from '../models/questao';
@@ -14,8 +15,11 @@ const questaoMock = new QuestaoModel(1, 'Melhor cor?', [
 const BASE_URL = 'http://localhost:3000/api';
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   const [idsDasQuestoes, setIdsDasQuestoes] = useState<number[]>([]);
   const [questao, setQuestao] = useState(questaoMock);
+  const [respostasCertas, setRespostasCertas] = useState(0);
 
   const carregarIdsDasQuestoes = async () => {
     const resp = await fetch(`${BASE_URL}/questionario`);
@@ -38,18 +42,46 @@ const Home: NextPage = () => {
     idsDasQuestoes.length > 0 && carregarQuestao(idsDasQuestoes[0]);
   }, [idsDasQuestoes]);
 
-  const questaoRespondida = (questao: QuestaoModel) => {};
+  const questaoRespondida = (questaoRespondida: QuestaoModel) => {
+    setQuestao(questaoRespondida);
+    const acertou = questaoRespondida.acertou;
+    setRespostasCertas(respostasCertas + (acertou ? 1 : 0));
+  };
 
-  const irPraProximoPasso = () => {};
+  const idProximaQuestao = () => {
+    if (questao) {
+      const proximoIndice = idsDasQuestoes.indexOf(questao.id) + 1;
+      return idsDasQuestoes[proximoIndice];
+    }
+  };
 
-  return (
+  const irPraProximaQuestao = (proximoId: number) => {
+    carregarQuestao(proximoId);
+  };
+
+  const finalizar = () => {
+    router.push({
+      pathname: '/resultado',
+      query: {
+        total: idsDasQuestoes.length,
+        certas: respostasCertas,
+      },
+    });
+  };
+
+  const irPraProximoPasso = () => {
+    const proximoId = idProximaQuestao();
+    proximoId ? irPraProximaQuestao(proximoId) : finalizar();
+  };
+
+  return questao ? (
     <Questionario
       questao={questao}
-      ultima={false}
+      ultima={idProximaQuestao() === undefined}
       questaoRespondida={questaoRespondida}
       irPraProximoPasso={irPraProximoPasso}
     />
-  );
+  ) : null;
 };
 
 export default Home;
